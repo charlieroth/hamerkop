@@ -1,7 +1,35 @@
 {
+  "version": "0.1.0",
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
   "imports": {
+    "@nostrify/denokv": "jsr:@nostrify/denokv@^0.35.0",
+    "@nostrify/nostrify": "jsr:@nostrify/nostrify@^0.38.1",
+    "@nostrify/policies": "jsr:@nostrify/policies@^0.36.1",
+    "@nostrify/types": "jsr:@nostrify/types@^0.36.0",
+    "@std/json": "jsr:@std/json@^1.0.1",
+    "deno.json": "./deno.json",
+    "@hono/hono": "jsr:@hono/hono@^4.7.0",
+    "@nostr/tools": "jsr:@nostr/tools@^2.10.4",
+    "@soapbox/logi": "jsr:@soapbox/logi@^0.3.0"
+  },
+  "lint": {
+    "rules": {
+      "tags": [
+        "recommended"
+      ],
+      "exclude": [
+        "no-explicit-any"
+      ]
+    }
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 120,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": true,
+    "proseWrap": "preserve"
   }
 }
