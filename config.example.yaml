@@ -1,0 +1,15 @@
+port:
+hostname:
+relay:
+  name:
+  description:
+  banner:
+  icon:
+  pubkey:
+  contact:
+  supported_nips:
+  software:
+  version:
+limits:
+  allow_empty_filters:
+  allow_complex_filters:
