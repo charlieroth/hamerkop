@@ -6,6 +6,7 @@ require (
 	github.com/fiatjaf/eventstore v0.16.0
 	github.com/fiatjaf/khatru v0.15.2
 	github.com/nbd-wtf/go-nostr v0.49.5
+	github.com/rs/zerolog v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -37,7 +38,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.4.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
-	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
