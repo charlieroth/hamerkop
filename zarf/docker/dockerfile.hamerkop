@@ -1,0 +1,28 @@
+FROM golang:1.24 AS build_hamerkop
+ENV CGO_ENABLED=0
+ARG BUILD_REF
+
+# Copy the source code into the container.
+COPY . /app
+
+# Build the service binary.
+WORKDIR /app
+RUN go build -ldflags "-X main.build=${BUILD_REF}"
+
+# Run the Go Binary in Alpine.
+FROM alpine:3.21
+ARG BUILD_DATE
+ARG BUILD_REF
+RUN addgroup -g 1000 -S hamerkop && \
+  adduser -u 1000 -h /app -G hamerkop -S hamerkop
+COPY --from=build_hamerkop --chown=hamerkop:hamerkop /app/cmd/hamerkop /app
+WORKDIR /app
+USER hamerkop
+CMD ["./hamerkop"]
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+  org.opencontainers.image.title="hamerkop-api" \
+  org.opencontainers.image.authors="Charlie Roth <charlieroth4@gmail.com>" \
+  org.opencontainers.image.source="https://github.com/charlieroth/hamerkop/tree/main" \
+  org.opencontainers.image.revision="${BUILD_REF}" \
+  org.opencontainers.image.vendor="Charlie Roth"

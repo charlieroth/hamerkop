@@ -27,7 +27,7 @@ func main() {
 
 func run(ctx context.Context, log *zerolog.Logger) error {
 	log.Info().Msg("⚡️ booting hamerkop...")
-	cfg, err := config.NewConfig("config.yaml")
+	cfg, err := config.NewConfig()
 	if err != nil {
 		return err
 	}
@@ -45,6 +45,11 @@ func run(ctx context.Context, log *zerolog.Logger) error {
 		return err
 	}
 	log.Info().Msg("✅ relay initialized")
+
+	http.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" && r.Header.Get("Upgrade") == "websocket" {
