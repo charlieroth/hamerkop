@@ -32,7 +32,7 @@ func (a *App) Init() error {
 	a.Relay.Info.Contact = a.cfg.Relay.Contact
 	a.Relay.Info.Icon = a.cfg.Relay.Icon
 	a.Relay.Info.PubKey = a.cfg.Relay.Pubkey
-	a.Relay.Info.SupportedNIPs = a.cfg.Relay.SupportedNIPs
+	a.Relay.Info.AddSupportedNIPs(a.cfg.Relay.SupportedNIPs)
 	a.Relay.ServiceURL = "https://hamerkop.charlieroth.me"
 
 	// Set up policies

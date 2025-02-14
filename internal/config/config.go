@@ -16,7 +16,7 @@ type RelayConfig struct {
 	Icon          string `json:"icon"`
 	Pubkey        string `json:"pubkey"`
 	Contact       string `json:"contact"`
-	SupportedNIPs []any  `json:"supported_nips"`
+	SupportedNIPs []int  `json:"supported_nips"`
 	Software      string `json:"software"`
 	Version       string `json:"version"`
 }
@@ -115,14 +115,14 @@ func NewConfig() (*Config, error) {
 	}
 
 	supportedNIPsSlice := strings.Split(supportedNIPs, ",")
-	supportedNIPsSliceInt := make([]any, len(supportedNIPsSlice))
+	supportedNIPsSliceInt := make([]int, len(supportedNIPsSlice))
 	for i, nip := range supportedNIPsSlice {
-		nipInt, err := strconv.ParseUint(nip, 10, 16)
+		nipInt, err := strconv.ParseInt(nip, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("RELAY_SUPPORTED_NIPS is not a valid integer: %w", err)
 		}
 
-		supportedNIPsSliceInt[i] = uint16(nipInt)
+		supportedNIPsSliceInt[i] = int(nipInt)
 	}
 
 	cfg := Config{

@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"slices"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -58,16 +60,28 @@ func run(ctx context.Context, log *zerolog.Logger) error {
 		} else if r.Method == "GET" && r.Header.Get("Accept") == "application/nostr+json" {
 			hamerkop.Relay.ServeHTTP(w, r)
 		} else {
-			// Otherwise, serve the index.html template
+			supportedNIPs := []int{}
+			for _, nip := range hamerkop.Relay.Info.SupportedNIPs {
+				nipInt, ok := nip.(int)
+				if !ok {
+					continue
+				}
+				supportedNIPs = append(supportedNIPs, nipInt)
+			}
+			slices.Sort(supportedNIPs)
+
 			relaySupportedNIPsStrings := []string{}
-			for _, nip := range cfg.Relay.SupportedNIPs {
-				relaySupportedNIPsStrings = append(relaySupportedNIPsStrings, fmt.Sprintf("%v", nip))
+			for _, nip := range supportedNIPs {
+				nipString := strconv.Itoa(nip)
+				relaySupportedNIPsStrings = append(relaySupportedNIPsStrings, nipString)
 			}
 			relaySupportedNIPs := strings.Join(relaySupportedNIPsStrings, ", ")
 
+			slices.Sort(cfg.AllowedKinds)
 			relayAllowedKindsStrings := []string{}
 			for _, kind := range cfg.AllowedKinds {
-				relayAllowedKindsStrings = append(relayAllowedKindsStrings, fmt.Sprintf("%v", kind))
+				kindString := strconv.Itoa(int(kind))
+				relayAllowedKindsStrings = append(relayAllowedKindsStrings, kindString)
 			}
 			relayAllowedKinds := strings.Join(relayAllowedKindsStrings, ", ")
 
