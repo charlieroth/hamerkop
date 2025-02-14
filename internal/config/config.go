@@ -109,9 +109,9 @@ func NewConfig() (*Config, error) {
 		return nil, fmt.Errorf("LIMITS_ALLOW_COMPLEX_FILTERS is not a valid boolean: %w", err)
 	}
 
-	supportedNIPs, ok := os.LookupEnv("SUPPORTED_NIPS")
+	supportedNIPs, ok := os.LookupEnv("RELAY_SUPPORTED_NIPS")
 	if !ok {
-		return nil, fmt.Errorf("SUPPORTED_NIPS is not set")
+		return nil, fmt.Errorf("RELAY_SUPPORTED_NIPS is not set")
 	}
 
 	supportedNIPsSlice := strings.Split(supportedNIPs, ",")
@@ -119,7 +119,7 @@ func NewConfig() (*Config, error) {
 	for i, nip := range supportedNIPsSlice {
 		nipInt, err := strconv.ParseUint(nip, 10, 16)
 		if err != nil {
-			return nil, fmt.Errorf("SUPPORTED_NIPS is not a valid integer: %w", err)
+			return nil, fmt.Errorf("RELAY_SUPPORTED_NIPS is not a valid integer: %w", err)
 		}
 
 		supportedNIPsSliceInt[i] = uint16(nipInt)

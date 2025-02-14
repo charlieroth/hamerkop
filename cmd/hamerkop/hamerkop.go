@@ -55,6 +55,8 @@ func run(ctx context.Context, log *zerolog.Logger) error {
 		if r.Method == "GET" && r.Header.Get("Upgrade") == "websocket" {
 			// If request is for websocket, serve the relay
 			hamerkop.Relay.ServeHTTP(w, r)
+		} else if r.Method == "GET" && r.Header.Get("Accept") == "application/nostr+json" {
+			hamerkop.Relay.ServeHTTP(w, r)
 		} else {
 			// Otherwise, serve the index.html template
 			relaySupportedNIPsStrings := []string{}
