@@ -72,3 +72,6 @@ run:
 
 clean:
 	rm -f hamerkop
+
+nip11:
+	curl -H "Accept: application/nostr+json" http://localhost:8080 | jq
