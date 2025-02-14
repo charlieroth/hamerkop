@@ -54,7 +54,7 @@ func run(ctx context.Context, log *zerolog.Logger) error {
 	// Handle shutdown
 	select {
 	case err := <-serverErrors:
-		return fmt.Errorf("server error: %w", err)
+		return fmt.Errorf("❌ server error: %w", err)
 	case sig := <-shutdown:
 		log.Info().Msgf("👋 shutting down hamerkop... (signal: %s)", sig)
 		defer log.Info().Msg("👋 hamerkop shutdown complete")
