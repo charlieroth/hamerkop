@@ -7,19 +7,23 @@ import (
 	"github.com/charlieroth/hamerkop/internal/store"
 	"github.com/fiatjaf/khatru"
 	"github.com/fiatjaf/khatru/policies"
+	"github.com/nbd-wtf/go-nostr"
+	"github.com/rs/zerolog"
 )
 
 type App struct {
-	cfg   *config.Config
-	Relay *khatru.Relay
-	Store store.Store
+	cfg    *config.Config
+	Logger *zerolog.Logger
+	Relay  *khatru.Relay
+	Store  store.Store
 }
 
-func NewApp(cfg *config.Config) *App {
+func NewApp(cfg *config.Config, log *zerolog.Logger) *App {
 	return &App{
-		cfg:   cfg,
-		Relay: khatru.NewRelay(),
-		Store: store.NewStore("hamerkop.db"),
+		cfg:    cfg,
+		Logger: log,
+		Relay:  khatru.NewRelay(),
+		Store:  store.NewStore("hamerkop.db"),
 	}
 }
 
@@ -51,11 +55,30 @@ func (a *App) Init() error {
 	)
 
 	// Set up event handlers
-	a.Relay.StoreEvent = append(a.Relay.StoreEvent, a.Store.SaveEvent)
-	a.Relay.QueryEvents = append(a.Relay.QueryEvents, a.Store.QueryEvents)
-	a.Relay.DeleteEvent = append(a.Relay.DeleteEvent, a.Store.DeleteEvent)
-	a.Relay.CountEvents = append(a.Relay.CountEvents, a.Store.CountEvents)
-	a.Relay.ReplaceEvent = append(a.Relay.ReplaceEvent, a.Store.ReplaceEvent)
+	a.Relay.StoreEvent = append(a.Relay.StoreEvent, func(ctx context.Context, event *nostr.Event) error {
+		a.Logger.Debug().Msgf("Storing event: %v", event)
+		return a.Store.SaveEvent(ctx, event)
+	})
+
+	a.Relay.QueryEvents = append(a.Relay.QueryEvents, func(ctx context.Context, filter nostr.Filter) (chan *nostr.Event, error) {
+		a.Logger.Debug().Msgf("Querying events with filter: %v", filter)
+		return a.Store.QueryEvents(ctx, filter)
+	})
+
+	a.Relay.DeleteEvent = append(a.Relay.DeleteEvent, func(ctx context.Context, event *nostr.Event) error {
+		a.Logger.Debug().Msgf("Deleting event: %v", event)
+		return a.Store.DeleteEvent(ctx, event)
+	})
+
+	a.Relay.CountEvents = append(a.Relay.CountEvents, func(ctx context.Context, filter nostr.Filter) (int64, error) {
+		a.Logger.Debug().Msgf("Counting events with filter: %v", filter)
+		return a.Store.CountEvents(ctx, filter)
+	})
+
+	a.Relay.ReplaceEvent = append(a.Relay.ReplaceEvent, func(ctx context.Context, event *nostr.Event) error {
+		a.Logger.Debug().Msgf("Replacing event: %v", event)
+		return a.Store.ReplaceEvent(ctx, event)
+	})
 
 	// Initialize event store
 	if err := a.Store.Init(); err != nil {

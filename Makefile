@@ -14,7 +14,7 @@ dev-docker:
 	wait;
 
 # ==============================================================================
-# Build containers 
+# Build containers
 
 build: hamerkop
 
@@ -27,7 +27,7 @@ hamerkop:
 		.
 
 # ==============================================================================
-# Docker Compose 
+# Docker Compose
 
 compose-up:
 	cd .zarf/compose && docker compose -f docker-compose.yaml -p compose up -d
@@ -66,6 +66,9 @@ list:
 
 # ==============================================================================
 # Local Development
+
+test:
+	go test ./...
 
 run:
 	go run cmd/hamerkop/hamerkop.go

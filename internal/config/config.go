@@ -12,7 +12,6 @@ import (
 type RelayConfig struct {
 	Name          string `json:"name"`
 	Description   string `json:"description"`
-	Banner        string `json:"banner"`
 	Icon          string `json:"icon"`
 	Pubkey        string `json:"pubkey"`
 	Contact       string `json:"contact"`
@@ -34,83 +33,36 @@ type Config struct {
 	AllowedKinds []uint16
 }
 
-func NewConfig() (*Config, error) {
-	port, ok := os.LookupEnv("PORT")
-	if !ok {
-		return nil, fmt.Errorf("PORT is not set")
-	}
+func LoadConfig() (*Config, error) {
+	port := os.Getenv("PORT")
 	portInt, err := strconv.Atoi(port)
 	if err != nil {
 		return nil, fmt.Errorf("PORT is not a valid integer: %w", err)
 	}
 
-	hostname, ok := os.LookupEnv("HOSTNAME")
-	if !ok {
-		return nil, fmt.Errorf("HOSTNAME is not set")
-	}
+	hostname := os.Getenv("HOSTNAME")
+	relayName := os.Getenv("RELAY_NAME")
+	relayDescription := os.Getenv("RELAY_DESCRIPTION")
+	relayIcon := os.Getenv("RELAY_ICON")
+	relayPubkey := os.Getenv("RELAY_PUBKEY")
+	relayContact := os.Getenv("RELAY_CONTACT")
+	relaySoftware := os.Getenv("RELAY_SOFTWARE")
+	relayVersion := os.Getenv("RELAY_VERSION")
 
-	relayName, ok := os.LookupEnv("RELAY_NAME")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_NAME is not set")
-	}
-
-	relayDescription, ok := os.LookupEnv("RELAY_DESCRIPTION")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_DESCRIPTION is not set")
-	}
-
-	relayBanner, ok := os.LookupEnv("RELAY_BANNER")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_BANNER is not set")
-	}
-
-	relayIcon, ok := os.LookupEnv("RELAY_ICON")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_ICON is not set")
-	}
-
-	relayPubkey, ok := os.LookupEnv("RELAY_PUBKEY")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_PUBKEY is not set")
-	}
-
-	relayContact, ok := os.LookupEnv("RELAY_CONTACT")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_CONTACT is not set")
-	}
-
-	relaySoftware, ok := os.LookupEnv("RELAY_SOFTWARE")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_SOFTWARE is not set")
-	}
-
-	relayVersion, ok := os.LookupEnv("RELAY_VERSION")
-	if !ok {
-		return nil, fmt.Errorf("RELAY_VERSION is not set")
-	}
-
-	limitsAllowEmptyFilters, ok := os.LookupEnv("LIMITS_ALLOW_EMPTY_FILTERS")
-	if !ok {
-		return nil, fmt.Errorf("LIMITS_ALLOW_EMPTY_FILTERS is not set")
-	}
-
+	limitsAllowEmptyFilters := os.Getenv("LIMITS_ALLOW_EMPTY_FILTERS")
 	limitsAllowEmptyFiltersBool, err := strconv.ParseBool(limitsAllowEmptyFilters)
 	if err != nil {
 		return nil, fmt.Errorf("LIMITS_ALLOW_EMPTY_FILTERS is not a valid boolean: %w", err)
 	}
 
-	limitsAllowComplexFilters, ok := os.LookupEnv("LIMITS_ALLOW_COMPLEX_FILTERS")
-	if !ok {
-		return nil, fmt.Errorf("LIMITS_ALLOW_COMPLEX_FILTERS is not set")
-	}
-
+	limitsAllowComplexFilters := os.Getenv("LIMITS_ALLOW_COMPLEX_FILTERS")
 	limitsAllowComplexFiltersBool, err := strconv.ParseBool(limitsAllowComplexFilters)
 	if err != nil {
 		return nil, fmt.Errorf("LIMITS_ALLOW_COMPLEX_FILTERS is not a valid boolean: %w", err)
 	}
 
-	supportedNIPs, ok := os.LookupEnv("RELAY_SUPPORTED_NIPS")
-	if !ok {
+	supportedNIPs := os.Getenv("RELAY_SUPPORTED_NIPS")
+	if supportedNIPs == "" {
 		return nil, fmt.Errorf("RELAY_SUPPORTED_NIPS is not set")
 	}
 
@@ -131,7 +83,6 @@ func NewConfig() (*Config, error) {
 		Relay: RelayConfig{
 			Name:          relayName,
 			Description:   relayDescription,
-			Banner:        relayBanner,
 			Icon:          relayIcon,
 			Pubkey:        relayPubkey,
 			Contact:       relayContact,

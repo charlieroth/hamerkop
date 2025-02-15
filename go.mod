@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/fiatjaf/eventstore v0.16.0
 	github.com/fiatjaf/khatru v0.15.2
+	github.com/joho/godotenv v1.5.1
 	github.com/nbd-wtf/go-nostr v0.49.5
 	github.com/rs/zerolog v1.33.0
 )

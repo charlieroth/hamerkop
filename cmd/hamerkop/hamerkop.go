@@ -11,6 +11,7 @@ import (
 
 	"github.com/charlieroth/hamerkop/internal/app"
 	"github.com/charlieroth/hamerkop/internal/config"
+	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
 )
 
@@ -23,15 +24,20 @@ func main() {
 }
 
 func run(ctx context.Context, log *zerolog.Logger) error {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return err
+	}
+
 	log.Info().Msg("⚡️ booting hamerkop...")
-	cfg, err := config.NewConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		return err
 	}
 	log.Info().Msg("✅ loaded relay configuration")
 
 	log.Info().Msg("✅ initializing relay...")
-	hamerkop := app.NewApp(cfg)
+	hamerkop := app.NewApp(cfg, log)
 	err = hamerkop.Init()
 	if err != nil {
 		return err
